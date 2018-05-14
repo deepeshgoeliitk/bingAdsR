@@ -1,0 +1,15 @@
+<s:Envelope xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+  <s:Header xmlns="https://bingads.microsoft.com/Reporting/v12">
+    <Action mustUnderstand="1">%s</Action>
+    <ApplicationToken i:nil="false">%s</ApplicationToken>
+    <AuthenticationToken i:nil="false">%s</AuthenticationToken>
+    <CustomerAccountId i:nil="false">%s</CustomerAccountId>
+    <CustomerId i:nil="false">%s</CustomerId>
+    <DeveloperToken i:nil="false">%s</DeveloperToken>
+    <Password i:nil="false">%s</Password>
+    <UserName i:nil="false">%s</UserName>
+  </s:Header>
+  <s:Body>
+  %s
+  </s:Body>
+</s:Envelope>
