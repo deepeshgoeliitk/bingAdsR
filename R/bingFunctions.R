@@ -1,5 +1,6 @@
 rm(list=ls())
 
+path <- paste0(.libPaths()[1],"/bingAdsR/data/")
 ###Dummy Variables###
 client_id <- ""
 client_secret <- ""
@@ -62,8 +63,8 @@ getReportId <- function(client_id, access_token, customer_id, account_id, develo
   url <- "https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/v12/ReportingService.svc"
   SOAPAction <- "SubmitGenerateReport"
   report <- "CampaignPerformanceReportRequest"
-  header <- paste(readLines("R/reporting.header.xml"), collapse = "")
-  bodyXML <- paste(readLines("R/reporting.campaignPerformance.xml"), collapse = "")
+  header <- paste(readLines(paste0(path,"reporting.header.xml")), collapse = "")
+  bodyXML <- paste(readLines(paste0(path,"reporting.campaignPerformance.xml")), collapse = "")
   bodyXML <- sprintf(bodyXML, report, account_id)
   # bodyXML <- sprintf(bodyXML, report, account_id, endDate$day, endDate$month, endDate$year, startDate$day, startDate$month, startDate$year)
   body <- sprintf(header, SOAPAction, client_id, access_token, customer_id, account_id, developer_token, password, username, bodyXML)
@@ -79,7 +80,7 @@ getDownloadUrl <- function(client_id, access_token, customer_id, account_id, dev
   url <- "https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/v12/ReportingService.svc"
   SOAPAction <- "PollGenerateReport"
   report <- "PollGenerateReportRequest"
-  header <- paste(readLines("R/reporting.header.xml"), collapse = "")
+  header <- paste(readLines(paste0(path,"reporting.header.xml")), collapse = "")
   bodyXML <- '<PollGenerateReportRequest xmlns="https://bingads.microsoft.com/Reporting/v12"><ReportRequestId i:nil="false">%s</ReportRequestId></PollGenerateReportRequest>'
   bodyXML <- sprintf(bodyXML, reportId)
   body <- sprintf(header, SOAPAction, client_id, access_token, customer_id, account_id, developer_token, password, username, bodyXML)
