@@ -14,6 +14,7 @@ password = ""
 developer_token = ""
 customer_id = ""
 account_id = ""
+reportId = ""
 
 
 ####AUTHENTICATION#####
@@ -61,12 +62,8 @@ baAuthentication <- function(client_id, client_secret){
 baAuthentication(client_id, client_secret)
 
 
-
-
 ##Report Type 2: CampaignPerformanceReportRequest
 getReportId <- function(client_id, access_token, customer_id, account_id, developer_token, password, username){
-  startDate <- dateSplitter(startDate)
-  endDate <- dateSplitter(endDate)
   url <- "https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/v12/ReportingService.svc"
   SOAPAction <- "SubmitGenerateReport"
   report <- "CampaignPerformanceReportRequest"
@@ -80,11 +77,10 @@ getReportId <- function(client_id, access_token, customer_id, account_id, develo
   curlPerform(url = url, httpheader = headerFields, postfields = body, writefunction = h$update)
   reportId <- xmlToList(h$value())$Body$SubmitGenerateReportResponse$ReportRequestId
   return(reportId)
-  write(bodyXML, "bodyXML.xml")
 }
 
 #Download the file and read it
-getDownloadUrl <- function(client_id, access_token, customer_id, account_id, developer_token, password, username){
+getDownloadUrl <- function(client_id, access_token, customer_id, account_id, developer_token, password, username, reportId){
   url <- "https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/v12/ReportingService.svc"
   SOAPAction <- "PollGenerateReport"
   report <- "PollGenerateReportRequest"
@@ -101,7 +97,7 @@ getDownloadUrl <- function(client_id, access_token, customer_id, account_id, dev
 
 getCampaignPerformance <- function(client_id, access_token, customer_id, account_id, developer_token, password, username){
   reportId <- getReportId(client_id, access_token, customer_id, account_id, developer_token, password, username)
-  downloadUrl <- getDownloadUrl(client_id, access_token, customer_id, account_id, developer_token, password, username)
+  downloadUrl <- getDownloadUrl(client_id, access_token, customer_id, account_id, developer_token, password, username, reportId)
   download.file(url = downloadUrl, destfile = "tmp.zip", method ='auto', mode = 'wb')
   unzip("tmp.zip")
   files <- unzip("tmp.zip", list = TRUE)
