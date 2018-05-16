@@ -94,7 +94,8 @@ getDownloadUrl <- function(client_id, access_token, customer_id, account_id, dev
 getCampaignPerformance <- function(client_id, access_token, customer_id, account_id, developer_token, password, username){
   reportId <- getReportId(client_id, access_token, customer_id, account_id, developer_token, password, username)
   downloadUrl <- getDownloadUrl(client_id, access_token, customer_id, account_id, developer_token, password, username, reportId)
-  download.file(url = downloadUrl, destfile = "tmp.zip", method ='auto', mode = 'wb')
+  zip(zipfile = 'tmp.zip', files = 'refresh_token')
+  download.file(url = downloadUrl, destfile = "tmp.zip", mode = 'wb', method ='auto')
   unzip("tmp.zip")
   files <- unzip("tmp.zip", list = TRUE)
   df <- read.csv(files$Name[1])
