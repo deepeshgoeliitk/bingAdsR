@@ -91,9 +91,7 @@ getDownloadUrl <- function(client_id, access_token, customer_id, account_id, dev
   return(downloadUrl)
 }
 
-getCampaignPerformance <- function(client_id, access_token, customer_id, account_id, developer_token, password, username){
-  reportId <- getReportId(client_id, access_token, customer_id, account_id, developer_token, password, username)
-  downloadUrl <- getDownloadUrl(client_id, access_token, customer_id, account_id, developer_token, password, username, reportId)
+getDataFromURL <- function(downloadUrl){
   zip(zipfile = 'tmp.zip', files = 'refresh_token')
   download.file(url = downloadUrl, destfile = "tmp.zip", mode = 'wb', method ='auto')
   unzip("tmp.zip")
@@ -101,6 +99,12 @@ getCampaignPerformance <- function(client_id, access_token, customer_id, account
   df <- read.csv(files$Name[1])
   file.remove("tmp.zip")
   file.remove(files$Name[1])
-  df
+  return(df)
 }
 
+getCampaignPerformance <- function(client_id, access_token, customer_id, account_id, developer_token, password, username){
+  reportId <- getReportId(client_id, access_token, customer_id, account_id, developer_token, password, username)
+  downloadUrl <- getDownloadUrl(client_id, access_token, customer_id, account_id, developer_token, password, username, reportId)
+  df <- getDataFromURL(downloadUrl)
+  return(df)
+}
