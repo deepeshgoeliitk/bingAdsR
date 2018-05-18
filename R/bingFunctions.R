@@ -55,18 +55,24 @@ baAuthentication <- function(client_id, client_secret){
   }
 }
 
-baAuthentication(client_id, client_secret)
-
-
+dateSplitter <- function(x){
+  x <- as.Date(x, origin = "1970-01-01")
+  tmp <- list()
+  tmp$year <- as.integer(format(x, "%Y"))
+  tmp$month <- as.integer(format(x, "%m"))
+  tmp$day <- as.integer(format(x, "%d"))
+  return(tmp)
+}
 ##Report Type 2: CampaignPerformanceReportRequest
-getReportId <- function(client_id, access_token, customer_id, account_id, developer_token, password, username){
+getReportId <- function(client_id, access_token, customer_id, account_id, developer_token, password, username, startDate, endDate){
+  startDate <- dateSplitter(startDate)
+  endDate <- dateSplitter(endDate)
   url <- "https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/v12/ReportingService.svc"
   SOAPAction <- "SubmitGenerateReport"
   report <- "CampaignPerformanceReportRequest"
   header <- paste(readLines(paste0(path,"reporting.header.xml")), collapse = "")
   bodyXML <- paste(readLines(paste0(path,"reporting.campaignPerformance.xml")), collapse = "")
-  bodyXML <- sprintf(bodyXML, report, account_id)
-  # bodyXML <- sprintf(bodyXML, report, account_id, endDate$day, endDate$month, endDate$year, startDate$day, startDate$month, startDate$year)
+  bodyXML <- sprintf(bodyXML, report, account_id, endDate$day, endDate$month, endDate$year, startDate$day, startDate$month, startDate$year)
   body <- sprintf(header, SOAPAction, client_id, access_token, customer_id, account_id, developer_token, password, username, bodyXML)
   headerFields =  c(Accept = "text/xml", Accept = "multipart/*", 'Content-Type' = "text/xml;charset=utf-8", SOAPAction = SOAPAction)
   h = basicTextGatherer()
@@ -102,9 +108,9 @@ getDataFromURL <- function(downloadUrl){
   return(df)
 }
 
-getCampaignPerformance <- function(client_id, access_token, customer_id, account_id, developer_token, password, username){
-  reportId <- getReportId(client_id, access_token, customer_id, account_id, developer_token, password, username)
-  downloadUrl <- getDownloadUrl(client_id, access_token, customer_id, account_id, developer_token, password, username, reportId)
-  df <- getDataFromURL(downloadUrl)
-  return(df)
-}
+# getCampaignPerformance <- function(client_id, access_token, customer_id, account_id, developer_token, password, username, startDate, endDate){
+#   reportId <- getReportId(client_id, access_token, customer_id, account_id, developer_token, password, username, startDate, endDate)
+#   downloadUrl <- getDownloadUrl(client_id, access_token, customer_id, account_id, developer_token, password, username, reportId)
+#   df <- getDataFromURL(downloadUrl)
+#   return(df)
+# }

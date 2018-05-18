@@ -23,8 +23,16 @@
           </AccountIds>
         </Scope>
         <Time i:nil="false">
-          <PredefinedTime i:nil="false">Yesterday</PredefinedTime>
-          <ReportTimeZone i:nil="false">PacificTimeUSCanadaTijuana</ReportTimeZone>
+          <CustomDateRangeEnd i:nil="false">
+            <Day>%s</Day>
+            <Month>%s</Month>
+            <Year>%s</Year>
+          </CustomDateRangeEnd>
+          <CustomDateRangeStart i:nil="false">
+            <Day>%s</Day>
+            <Month>%s</Month>
+            <Year>%s</Year>          
+          </CustomDateRangeStart>
         </Time>
         </ReportRequest>
     </SubmitGenerateReportRequest>
