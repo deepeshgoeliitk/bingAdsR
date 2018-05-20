@@ -1,5 +1,5 @@
 <SubmitGenerateReportRequest xmlns="https://bingads.microsoft.com/Reporting/v12">
-      <ReportRequest i:nil="false" i:type="%s">
+      <ReportRequest i:nil="false" i:type="%sRequest">
         <ExcludeColumnHeaders i:nil="false">false</ExcludeColumnHeaders>
         <ExcludeReportFooter i:nil="false">true</ExcludeReportFooter>
         <ExcludeReportHeader i:nil="false">true</ExcludeReportHeader>
@@ -8,15 +8,7 @@
         <ReturnOnlyCompleteData i:nil="false">true</ReturnOnlyCompleteData>
         <!--These fields are applicable if the derived type attribute is set to AccountPerformanceReportRequest-->
         <Aggregation>Daily</Aggregation>
-        <Columns i:nil="false">
-          <CampaignPerformanceReportColumn>AccountName</CampaignPerformanceReportColumn>
-          <CampaignPerformanceReportColumn>CampaignName</CampaignPerformanceReportColumn>
-          <CampaignPerformanceReportColumn>TimePeriod</CampaignPerformanceReportColumn>
-          <CampaignPerformanceReportColumn>Impressions</CampaignPerformanceReportColumn>
-          <CampaignPerformanceReportColumn>Clicks</CampaignPerformanceReportColumn>
-          <CampaignPerformanceReportColumn>Spend</CampaignPerformanceReportColumn>
-          <CampaignPerformanceReportColumn>Conversions</CampaignPerformanceReportColumn>
-        </Columns>
+        <Columns i:nil="false">%s</Columns>
         <Scope i:nil="false">
           <AccountIds i:nil="false" xmlns:a1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
             <a1:long>%s</a1:long>

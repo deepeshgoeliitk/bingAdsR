@@ -1,6 +1,6 @@
 rm(list=ls())
-# library(bingAdsR)
 path <- paste0(.libPaths()[1],"/bingAdsR/data/")
+
 
 ###Dummy Variables###
 reportId = ""
@@ -85,8 +85,8 @@ baAuthentication <- function(credentials){
 }
 
 
-##Report Type 2: CampaignPerformanceReportRequest
-getReportId <- function(credentials, startDate, endDate){
+##Report Any Type
+getReportId <- function(credentials, report, columns, startDate, endDate){
   dateSplitter <- function(x){
     x <- as.Date(x, origin = "1970-01-01")
     tmp <- list()
@@ -95,15 +95,23 @@ getReportId <- function(credentials, startDate, endDate){
     tmp$day <- as.integer(format(x, "%d"))
     return(tmp)
   }
-
+  
+  getColumnsXML <- function(report, columms){
+    columnsXML <- ""
+    for(column in columns){
+      columnsXML <- paste0(columnsXML, "<", report, "Column>", column, "</", report, "Column>")
+    }
+    return(columnsXML)
+  }
+  
   startDate <- dateSplitter(startDate)
   endDate <- dateSplitter(endDate)
   url <- "https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/v12/ReportingService.svc"
   SOAPAction <- "SubmitGenerateReport"
-  report <- "CampaignPerformanceReportRequest"
   header <- paste(readLines(paste0(path,"reporting.header.xml")), collapse = "")
-  bodyXML <- paste(readLines(paste0(path,"reporting.campaignPerformance.xml")), collapse = "")
-  bodyXML <- sprintf(bodyXML, report, credentials$account_id, endDate$day, endDate$month, endDate$year, startDate$day, startDate$month, startDate$year)
+  bodyXML <- paste(readLines(paste0(path,"reporting.SubmitGenerateReportRequest.xml")), collapse = "")
+  columnsXML <- getColumnsXML(report, columms)
+  bodyXML <- sprintf(bodyXML, report, columnsXML, credentials$account_id, endDate$day, endDate$month, endDate$year, startDate$day, startDate$month, startDate$year)
   body <- sprintf(header, SOAPAction,
                   credentials$client_id, credentials$access_token, credentials$customer_id, credentials$account_id, credentials$developer_token, credentials$password, credentials$username,
                   bodyXML)
@@ -133,6 +141,7 @@ getDownloadUrl <- function(credentials, reportId){
   return(downloadUrl)
 }
 
+#Download the data
 getDataFromURL <- function(downloadUrl){
   zip(zipfile = 'tmp.zip', files = 'refresh_token')
   download.file(url = downloadUrl, destfile = "tmp.zip", mode = 'wb', method ='auto')
