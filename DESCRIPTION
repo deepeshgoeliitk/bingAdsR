@@ -1,11 +1,11 @@
 Package: bingAdsR
 Type: Package
-Title: What the Package Does (Title Case)
+Title: An interface to Microsoft's Bing API from R 
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: Deepesh Goel
+Maintainer: The package maintainer <deepeshgoel.iitk@gmail.com>
+Description: This package helps user to work on bing ads api in R.
+    Currently it supports bing authentication and reporting services only.
 License: What license is it under?
 Encoding: UTF-8
 Depends: httr, XML, jsonlite, RCurl
