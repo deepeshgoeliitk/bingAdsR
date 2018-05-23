@@ -1,57 +1,67 @@
 \name{baAuthentication}
 \alias{baAuthentication}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 This generates the accessToken using a refresh token or authorization code.
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+This function starts the authentication process with Microsoft Bing. 
+If the user is initiating it for the first time, this function needs user interaction.
+
+Assign the credentials <- baAuthentication(credentials). This updates the access token in the credentials.
 }
 \usage{
-baAuthentication(x)
+baAuthentication(credentials = credentials)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
-%%     ~~Describe \code{x} here~~
+  \item{credentials}{
+	All the credentials related paramters are put in a list named - 'credentials' as shown below.
+	##Not run
+	credentials <- list(
+	  client_id = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+	  client_secret = "XXXXXXXXXXXXXXX",
+	  username = "abc@abc.com",
+	  password = "***********",
+	  developer_token = "XXXXXXXXXXXXXXXXX",
+	  customer_id = "XXXXXXXXXX",
+	  account_id = "XXXXXXX"
+	)
+	##End(Not run)
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+\item{credentials}{
+				The credentials is the list of parameters like client_id, client_secret, username, password, developer_token, customer_id and account_id. 
+				The refresh_token generated is saved in the working directory. The access_token is passed as a value in the credentials list itself. Hence it is necessary to assign the output to credentials.
+				}
 }
 \references{
-%% ~put references to the literature/web site here ~
+Getting Started with Bing API: https://docs.microsoft.com/en-us/bingads/guides/get-started?view=bingads-12
 }
 \author{
-%%  ~~who you are~~
+Deepesh Goel
 }
 \note{
-%%  ~~further notes~~
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (x)
-{
-  }
+	##Not run
+	credentials <- list(
+	  ###For authorization and access token###
+	  client_id = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+	  client_secret = "XXXXXXXXXXXXXXX",
+	  ###To get data###
+	  username = "abc@abc.com",
+	  password = "***********",
+	  developer_token = "XXXXXXXXXXXXXXXXX",
+	  customer_id = "XXXXXXXXXX",
+	  account_id = "XXXXXXX"
+	)
+	credentials <- baAuthentication(credentials)
+	##End(Not run)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }% use one of  RShowDoc("KEYWORDS")
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ ~bing ads reporting api in R }
+\keyword{ ~bing ads api authentication }
+\keyword{ ~baAuthentication }

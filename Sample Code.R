@@ -34,9 +34,6 @@ df <- getDataFromURL(downloadUrl)
 report <- "AccountPerformanceReport"
 columns <- c("AccountName", "DeviceType", "TimePeriod", "Impressions", "Clicks", "Spend", "Conversions")
 
-
-
-
-# write(downloadUrl, "downloadUrl.csv")
-# getwd()
-
+reportId <- getReportId(credentials, report, columns, startDate, endDate)
+downloadUrl <- getDownloadUrl(credentials, reportId)
+df <- getDataFromURL(downloadUrl)

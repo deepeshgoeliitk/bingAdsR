@@ -1,73 +1,59 @@
 rm(list=ls())
 path <- paste0(.libPaths()[1],"/bingAdsR/data/")
 
-
-###Dummy Variables###
-reportId = ""
-credentials <- list(
-  ###To get accessToken###
-  client_id <- "",
-  client_secret <- "",
-  ###To get data###
-  username = "",
-  password = "",
-  developer_token = "",
-  customer_id = "",
-  account_id = ""
-)
-
-setAccessToken <- function(credentials, access_token){
-  credentials <- list(
-    client_id = credentials$client_id,
-    client_secret = credentials$client_secret,
-    username = credentials$username,
-    password = credentials$password,
-    developer_token = credentials$developer_token,
-    customer_id = credentials$customer_id,
-    access_token = access_token,
-    account_id = credentials$account_id
-  )
-  print("Access Token Generated.")
-  return(credentials)
-}
-
 ####AUTHENTICATION#####
-getAccessToken <- function(credentials, grant_type, redirect_uri, code, refresh_token){
-  baseURL <- 'https://login.live.com/oauth20_token.srf'
-  redirect_uri <- 'http://localhost'
-  #Based on grant_type, choose the authorization_code
-  if(grant_type == "authorization_code"){
-    requestBody <- list(client_id=credentials$client_id, client_secret=credentials$client_secret,
-                        grant_type=grant_type, redirect_uri=redirect_uri, code=code)
-  }else{
-    #grant_type = refresh_token, code is not required
-    requestBody <- list(client_id=credentials$client_id, client_secret=credentials$client_secret,
-                        grant_type=grant_type, redirect_uri=redirect_uri, refresh_token=refresh_token)
-  }
-  requestHeader <- c("Content-Type" =  "application/x-www-form-urlencoded",  "Accept" = "application/json", "Host" = "login.live.com")
-  response <- POST(baseURL, body = requestBody, encode = "form", add_headers(.headers = requestHeader))
-  contents = fromJSON(txt = as.character(rawToChar(response$content)))
-  #Get the tokens and save refresh_token
-  access_token <- contents$access_token
-  refresh_token <- contents$refresh_token
-  write(refresh_token, "refresh_token")
-  credentials <- setAccessToken(credentials, access_token)
-  return(credentials)
-}
-
-authenticateFirstTimeUser <- function(credentials){
-  # Authenticate user to get code
-  redirect_uri <- 'http://localhost'
-  url <- sprintf('https://login.live.com/oauth20_authorize.srf?client_id=%s&scope=bingads.manage&response_type=code&redirect_uri=%s&state=ClientStateGoesHere', credentials$client_id,redirect_uri)
-  browseURL(url)
-  code <- readline("Please enter the code from the URL: ")
-  # Use the code to get accessToken and refreshToken
-  credentials <- getAccessToken(credentials, grant_type="authorization_code", redirect_uri, code)
-  return(credentials)
-}
-
-
 baAuthentication <- function(credentials){
+  ## Define functions
+  setAccessToken <- function(credentials, access_token){
+    credentials <- list(
+      client_id = credentials$client_id,
+      client_secret = credentials$client_secret,
+      username = credentials$username,
+      password = credentials$password,
+      developer_token = credentials$developer_token,
+      customer_id = credentials$customer_id,
+      access_token = access_token,
+      account_id = credentials$account_id
+    )
+    print("Access Token Generated.")
+    return(credentials)
+  }
+
+  getAccessToken <- function(credentials, grant_type, redirect_uri, code, refresh_token){
+    baseURL <- 'https://login.live.com/oauth20_token.srf'
+    redirect_uri <- 'http://localhost'
+    #Based on grant_type, choose the authorization_code
+    if(grant_type == "authorization_code"){
+      requestBody <- list(client_id=credentials$client_id, client_secret=credentials$client_secret,
+                          grant_type=grant_type, redirect_uri=redirect_uri, code=code)
+    }else{
+      #grant_type = refresh_token, code is not required
+      requestBody <- list(client_id=credentials$client_id, client_secret=credentials$client_secret,
+                          grant_type=grant_type, redirect_uri=redirect_uri, refresh_token=refresh_token)
+    }
+    requestHeader <- c("Content-Type" =  "application/x-www-form-urlencoded",  "Accept" = "application/json", "Host" = "login.live.com")
+    response <- POST(baseURL, body = requestBody, encode = "form", add_headers(.headers = requestHeader))
+    contents = fromJSON(txt = as.character(rawToChar(response$content)))
+    #Get the tokens and save refresh_token
+    access_token <- contents$access_token
+    refresh_token <- contents$refresh_token
+    write(refresh_token, "refresh_token")
+    credentials <- setAccessToken(credentials, access_token)
+    return(credentials)
+  }
+
+  authenticateFirstTimeUser <- function(credentials){
+    # Authenticate user to get code
+    redirect_uri <- 'http://localhost'
+    url <- sprintf('https://login.live.com/oauth20_authorize.srf?client_id=%s&scope=bingads.manage&response_type=code&redirect_uri=%s&state=ClientStateGoesHere', credentials$client_id,redirect_uri)
+    browseURL(url)
+    code <- readline("Please enter the code from the URL: ")
+    # Use the code to get accessToken and refreshToken
+    credentials <- getAccessToken(credentials, grant_type="authorization_code", redirect_uri, code)
+    return(credentials)
+  }
+
+  ## Begin Authentication
   if(!file.exists("refresh_token")){
     print("Refresh Token not present. Will Use code.")
     credentials <- authenticateFirstTimeUser(credentials)
@@ -84,7 +70,6 @@ baAuthentication <- function(credentials){
   return(credentials)
 }
 
-
 ##Report Any Type
 getReportId <- function(credentials, report, columns, startDate, endDate){
   dateSplitter <- function(x){
@@ -95,7 +80,7 @@ getReportId <- function(credentials, report, columns, startDate, endDate){
     tmp$day <- as.integer(format(x, "%d"))
     return(tmp)
   }
-  
+
   getColumnsXML <- function(report, columms){
     columnsXML <- ""
     for(column in columns){
@@ -103,7 +88,7 @@ getReportId <- function(credentials, report, columns, startDate, endDate){
     }
     return(columnsXML)
   }
-  
+
   startDate <- dateSplitter(startDate)
   endDate <- dateSplitter(endDate)
   url <- "https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/v12/ReportingService.svc"
@@ -120,6 +105,7 @@ getReportId <- function(credentials, report, columns, startDate, endDate){
   h = basicTextGatherer()
   curlPerform(url = url, httpheader = headerFields, postfields = body, writefunction = h$update)
   reportId <- xmlToList(h$value())$Body$SubmitGenerateReportResponse$ReportRequestId
+  if(is.null(reportId)|reportId==""){print(paste("Error - ", h$value))}
   return(reportId)
 }
 
@@ -138,6 +124,7 @@ getDownloadUrl <- function(credentials, reportId){
   h = basicTextGatherer()
   curlPerform(url = url, httpheader = headerFields, postfields = body, writefunction = h$update)
   downloadUrl <- xmlToList(h$value())$Body$PollGenerateReportResponse$ReportRequestStatus$ReportDownloadUrl
+  if(is.null(downloadUrl)|downloadUrl==""){print(paste("Error - ", h$value))}
   return(downloadUrl)
 }
 
@@ -152,8 +139,3 @@ getDataFromURL <- function(downloadUrl){
   file.remove(files$Name[1])
   return(df)
 }
-
-
-
-
-
