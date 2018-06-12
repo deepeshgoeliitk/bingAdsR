@@ -5,7 +5,7 @@
         <ExcludeReportHeader i:nil="false">true</ExcludeReportHeader>
         <Format i:nil="false">Csv</Format>
         <Language i:nil="false">English</Language>
-        <ReturnOnlyCompleteData i:nil="false">true</ReturnOnlyCompleteData>
+        <ReturnOnlyCompleteData i:nil="false">false</ReturnOnlyCompleteData>
         <!--These fields are applicable if the derived type attribute is set to AccountPerformanceReportRequest-->
         <Aggregation>Daily</Aggregation>
         <Columns i:nil="false">%s</Columns>
